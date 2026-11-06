@@ -10,6 +10,7 @@
 :root{
   --bg:#fff8ef; --card:#ffffff; --ink:#1d1a16; --muted:#7a7066; --line:#eadfd2;
   --accent:#ff5a1f; --accent-ink:#fff; --gold:#f2b705; --soft:#fff1e3;
+  --good:#2fbf71; --bad:#d94848; --law:#5b5bd6;
 }
 @media (prefers-color-scheme: dark){
   :root{ --bg:#16130f; --card:#211c17; --ink:#f6efe7; --muted:#a39587; --line:#3a3129; --soft:#2b231c; }
@@ -17,16 +18,27 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(40px,8vw,72px);line-height:.9;margin:0;letter-spacing:-.03em}
 h1 span{color:var(--accent)}
 .sub{color:var(--muted);margin:8px 0 0;font-size:15px}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;background:#2fbf71}
-.dot.off{background:#d94848}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.dot.off{background:var(--bad)}
+.yo{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.yo select{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:600 14px Inter}
+.yo.need select{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
 .tabs{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:999px;width:max-content;max-width:100%;overflow:auto;margin-bottom:20px}
 .tabs button{border:0;background:transparent;color:var(--muted);font:600 14px Inter;padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+.hero{background:var(--ink);color:var(--bg);border-radius:24px;padding:22px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero .lbl{font:700 12px Inter;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.hero .big{font-family:"Bricolage Grotesque";font-weight:700;font-size:clamp(22px,4vw,34px);line-height:1.15;margin:8px 0 10px;word-break:break-word}
+.hero .who{font-size:14px;opacity:.8}
+.hero .ico{position:absolute;right:18px;top:10px;font-size:64px;opacity:.15}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative;transition:transform .15s}
 .card.lead{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
@@ -42,25 +54,51 @@ h1 span{color:var(--accent)}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .4s}
 .pop{animation:pop .35s}
 @keyframes pop{40%{transform:scale(1.05) rotate(-1deg)}}
-section h2{font-family:"Bricolage Grotesque";font-size:24px;margin:36px 0 12px}
+
+section h2{font-family:"Bricolage Grotesque";font-size:24px;margin:36px 0 4px}
+.rules{color:var(--muted);font-size:13px;margin:0 0 12px}
 .feed{display:flex;flex-direction:column;gap:8px}
-.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.item.void{opacity:.55}
+.item.void .q{text-decoration:line-through}
+.item.trial{border-color:var(--law);box-shadow:0 0 0 3px color-mix(in srgb,var(--law) 18%,transparent)}
+.item .body{flex:1;min-width:0}
 .item b{font-family:"Bricolage Grotesque"}
 .item .q{font-style:italic;margin-top:2px;word-break:break-word}
 .item .t{color:var(--muted);font-size:12px;margin-top:4px}
-.item .del{margin-left:auto;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+.item .del{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+.tag{display:inline-block;font:600 11px Inter;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:2px}
+.badge{display:inline-block;font:700 11px Inter;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;color:#fff}
+.badge.void{background:var(--muted)}
+.badge.x2{background:var(--bad)}
+.badge.free{background:var(--good)}
+.badge.trial{background:var(--law)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.vb{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 10px;font:600 13px Inter;cursor:pointer}
+.vb.on.up{background:var(--good);border-color:var(--good);color:#fff}
+.vb.on.down{background:var(--bad);border-color:var(--bad);color:#fff}
+.vb.on.law{background:var(--law);border-color:var(--law);color:#fff}
+.vb.appeal{border-color:var(--law);color:var(--law)}
+.vb[disabled]{opacity:.45;cursor:default}
+.trialbox{margin-top:8px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--law) 10%,transparent);font-size:13px}
+.trialbox .acts{margin-top:6px}
 .empty{color:var(--muted);padding:20px;text-align:center;border:1px dashed var(--line);border-radius:14px}
-dialog{border:0;border-radius:20px;padding:22px;background:var(--card);color:var(--ink);width:min(420px,calc(100vw - 32px))}
+
+dialog{border:0;border-radius:20px;padding:22px;background:var(--card);color:var(--ink);width:min(480px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
 dialog::backdrop{background:rgba(0,0,0,.45)}
 dialog h3{font-family:"Bricolage Grotesque";margin:0 0 4px;font-size:24px}
 dialog label{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
 dialog input,dialog textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 12px;font:15px Inter}
-dialog textarea{resize:vertical;min-height:80px}
+dialog textarea{resize:vertical;min-height:70px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font:500 13px Inter;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ph{font-style:italic;text-align:left}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
 .row button{border:0;border-radius:12px;padding:10px 18px;font:600 15px Inter;cursor:pointer}
 .ghost{background:var(--soft);color:var(--ink)}
 .go{background:var(--accent);color:#fff}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;transition:transform .25s;z-index:9}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;transition:transform .25s;z-index:9;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .warn{background:#fff3cd;color:#6b5200;border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:16px}
 </style>
@@ -72,10 +110,16 @@ dialog textarea{resize:vertical;min-height:80px}
       <h1>Paj<span>app</span></h1>
       <p class="sub">El contador oficial de pajereadas de la oficina. Lo decidimos nosotros.</p>
     </div>
-    <div class="status"><span class="dot" id="dot"></span><span id="statusTxt">conectando…</span></div>
+    <div class="hright">
+      <div class="yo" id="yoBox">Soy
+        <select id="yo"><option value="">¿quién sos?</option></select>
+      </div>
+      <div class="status"><span class="dot" id="dot"></span><span id="statusTxt">conectando…</span></div>
+    </div>
   </header>
 
   <div id="warn"></div>
+  <div id="hero"></div>
 
   <div class="tabs" id="tabs">
     <button data-r="hoy">Hoy</button>
@@ -88,6 +132,7 @@ dialog textarea{resize:vertical;min-height:80px}
 
   <section>
     <h2>Últimas pajereadas</h2>
+    <p class="rules">👎 Con 3 votos en contra (y más 👎 que 👍) se anula. ⚖️ El acusado puede apelar una vez: con 3 votos del jurado se resuelve — si es culpable cuenta <b>doble</b>, si es inocente no cuenta.</p>
     <div class="feed" id="feed"></div>
   </section>
 </div>
@@ -95,7 +140,13 @@ dialog textarea{resize:vertical;min-height:80px}
 <dialog id="dlg">
   <form method="dialog" id="form">
     <h3 id="dlgTitle">Pajereada</h3>
-    <div class="meta">¿Qué dijo? (opcional, pero queda para la historia)</div>
+    <div class="meta">Elegí una categoría, una frase clásica o escribí lo que dijo.</div>
+    <label>Categoría</label>
+    <div class="chips" id="cats"></div>
+    <div id="phWrap" hidden>
+      <label>Frases clásicas</label>
+      <div class="chips" id="phs"></div>
+    </div>
     <label for="frase">La frase</label>
     <textarea id="frase" maxlength="300" placeholder="“Yo eso lo hago en dos horas”"></textarea>
     <label for="por">Anotada por</label>
@@ -114,10 +165,23 @@ dialog textarea{resize:vertical;min-height:80px}
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzrnK_2ID1uhDrbLEtsfXJXS5qu-V09loWCdrTGgimm6172__Q79wdc2nC061rlh2r/exec';
 const NOMBRES = ['Juancho', 'Puntano', 'Ivan', 'Mati', 'Alan', 'Bachi', 'Head'];
 const EMOJI = { Juancho:'🧉', Puntano:'🏜️', Ivan:'🐻', Mati:'⚡', Alan:'⚽', Bachi:'🐷', Head:'🍆' };
+const MIN_VOTOS = 3;
 
-let data = [];
+const CATS = [
+  { k:'Agrandado',   e:'💪', f:['Yo eso lo levanto con una mano','En mi época corría 10 km sin entrenar','Si me pongo, lo hago mejor que él'] },
+  { k:'Tiempo',      e:'⏱️', f:['Eso lo hago en 5 minutos','Mañana lo tengo listo, seguro','Ya casi lo termino'] },
+  { k:'Plata',       e:'💸', f:['Eso me lo compro mañana si quiero','Yo con esa guita ni me levanto','Tengo una inversión que me rinde un montón'] },
+  { k:'Levante',     e:'😏', f:['Esa me tiró onda','Tengo una que me escribe todos los días','Si quisiera, sale conmigo'] },
+  { k:'Sabelotodo',  e:'🧠', f:['Eso lo leí, es así','Yo ya lo sabía','Créeme, sé de lo que hablo'] },
+  { k:'Fútbol',      e:'⚽', f:['Yo jugaba en inferiores','Si no fuera por la rodilla, llegaba','Le hice un caño a uno de primera'] },
+  { k:'Conocidos',   e:'🤝', f:['Tengo un primo que…','Conozco al dueño','Un amigo mío trabaja ahí, te consigo'] },
+  { k:'Otra',        e:'🎲', f:[] },
+];
+const CAT_E = Object.fromEntries(CATS.map(c => [c.k, c.e]));
+
+let data = [], votos = [];
 let rango = 'total';
-let target = null;
+let target = null, cat = '';
 let busy = false;
 
 const $ = id => document.getElementById(id);
@@ -126,52 +190,95 @@ const store = {
   set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 rango = store.get('pajapp.rango', 'total');
+let yo = store.get('pajapp.yo', '');
+
+$('yo').innerHTML += NOMBRES.map(n => `<option>${n}</option>`).join('');
+$('yo').value = yo;
+$('yo').onchange = e => { yo = e.target.value; store.set('pajapp.yo', yo); render(); };
 
 function toast(msg){
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200);
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2400);
 }
-
-function setStatus(ok, txt){
-  $('dot').classList.toggle('off', !ok);
-  $('statusTxt').textContent = txt;
-}
+function setStatus(ok, txt){ $('dot').classList.toggle('off', !ok); $('statusTxt').textContent = txt; }
 
 async function api(params){
   if (!SCRIPT_URL) {
-    // modo demo local
-    let local = store.get('pajapp.demo', []);
-    if (params.action === 'add') local.push({ id: Math.random().toString(36).slice(2,10), fecha: new Date().toISOString(), nombre: params.nombre, frase: params.frase, por: params.por });
-    if (params.action === 'delete') local = local.filter(x => x.id !== params.id);
-    store.set('pajapp.demo', local);
-    return local;
+    let s = store.get('pajapp.demo', { data: [], votos: [] });
+    if (params.action === 'add') s.data.push({ id: Math.random().toString(36).slice(2,10), fecha: new Date().toISOString(), nombre: params.nombre, frase: params.frase, por: params.por, categoria: params.categoria, apelada: '' });
+    if (params.action === 'delete') { s.data = s.data.filter(x => x.id !== params.id); s.votos = s.votos.filter(v => v.id !== params.id); }
+    if (params.action === 'vote') { s.votos = s.votos.filter(v => !(v.id === params.id && v.votante === params.votante && v.tipo === params.tipo)); if (+params.valor) s.votos.push({ id: params.id, votante: params.votante, valor: +params.valor, tipo: params.tipo }); }
+    if (params.action === 'apelar') { const x = s.data.find(x => x.id === params.id); if (x) x.apelada = new Date().toISOString(); }
+    store.set('pajapp.demo', s);
+    return s;
   }
-  const qs = new URLSearchParams(params).toString();
-  const r = await fetch(SCRIPT_URL + '?' + qs);
+  const r = await fetch(SCRIPT_URL + '?' + new URLSearchParams(params));
   const j = await r.json();
   if (!j.ok) throw new Error(j.error || 'error');
-  return j.data;
+  return j;
+}
+
+// ---- reglas ----
+function info(x){
+  const vs = votos.filter(v => v.id === x.id);
+  const up = vs.filter(v => v.tipo === 'voto' && v.valor > 0).length;
+  const down = vs.filter(v => v.tipo === 'voto' && v.valor < 0).length;
+  const culp = vs.filter(v => v.tipo === 'juicio' && v.valor > 0).length;
+  const inoc = vs.filter(v => v.tipo === 'juicio' && v.valor < 0).length;
+  const mine = (tipo) => (vs.find(v => v.votante === yo && v.tipo === tipo) || {}).valor || 0;
+  let estado = 'valida', pts = 1;
+  if (x.apelada) {
+    if (culp + inoc >= MIN_VOTOS && culp > inoc) { estado = 'culpable'; pts = 2; }
+    else if (culp + inoc >= MIN_VOTOS) { estado = 'inocente'; pts = 0; }
+    else estado = 'juicio';
+  } else if (down >= MIN_VOTOS && down > up) { estado = 'anulada'; pts = 0; }
+  return { up, down, culp, inoc, estado, pts, miVoto: mine('voto'), miJuicio: mine('juicio') };
 }
 
 function desde(r){
   const d = new Date(); d.setHours(0,0,0,0);
   if (r === 'hoy') return d;
-  if (r === 'semana'){ const day = (d.getDay() + 6) % 7; d.setDate(d.getDate() - day); return d; }
+  if (r === 'semana'){ d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d; }
   if (r === 'mes'){ d.setDate(1); return d; }
   return new Date(0);
 }
 
+function destacada(){
+  const cand = data.map(x => ({ x, i: info(x) }))
+    .filter(o => o.x.frase && o.i.pts > 0 && o.i.up - o.i.down >= 1)
+    .sort((a, b) => (b.i.up - b.i.down) - (a.i.up - a.i.down) || new Date(b.x.fecha) - new Date(a.x.fecha));
+  const hoy = desde('hoy'), sem = desde('semana');
+  const d = cand.find(o => new Date(o.x.fecha) >= hoy);
+  if (d) return { ...d, lbl: '🏆 Frase del día' };
+  const s = cand.find(o => new Date(o.x.fecha) >= sem);
+  if (s) return { ...s, lbl: '🏆 Frase de la semana' };
+  return null;
+}
+
 function render(){
+  $('yoBox').classList.toggle('need', !yo);
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.r === rango));
   const from = desde(rango), hoy = desde('hoy');
-  const enRango = data.filter(x => new Date(x.fecha) >= from);
   const counts = Object.fromEntries(NOMBRES.map(n => [n, 0]));
   const hoyC = Object.fromEntries(NOMBRES.map(n => [n, 0]));
-  enRango.forEach(x => { if (x.nombre in counts) counts[x.nombre]++; });
-  data.forEach(x => { if (new Date(x.fecha) >= hoy && x.nombre in hoyC) hoyC[x.nombre]++; });
+  data.forEach(x => {
+    if (!(x.nombre in counts)) return;
+    const p = info(x).pts, f = new Date(x.fecha);
+    if (f >= from) counts[x.nombre] += p;
+    if (f >= hoy) hoyC[x.nombre] += p;
+  });
   const max = Math.max(1, ...Object.values(counts));
   const orden = [...NOMBRES].sort((a,b) => counts[b] - counts[a]);
   const lider = counts[orden[0]] > 0 && counts[orden[0]] > counts[orden[1]] ? orden[0] : null;
+
+  const d = destacada();
+  $('hero').innerHTML = d ? `
+    <div class="hero">
+      <div class="ico">${EMOJI[d.x.nombre] || '🤚'}</div>
+      <div class="lbl">${d.lbl}</div>
+      <div class="big">“${esc(d.x.frase)}”</div>
+      <div class="who">— ${esc(d.x.nombre)} · 👍 ${d.i.up}${d.i.down ? ' · 👎 ' + d.i.down : ''}</div>
+    </div>` : '';
 
   $('grid').innerHTML = orden.map(n => `
     <div class="card ${n === lider ? 'lead' : ''}" id="c-${n}">
@@ -186,17 +293,50 @@ function render(){
       </div>
     </div>`).join('');
 
-  const ult = [...data].sort((a,b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 30);
-  $('feed').innerHTML = ult.length ? ult.map(x => `
-    <div class="item">
+  const ult = [...data].sort((a,b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 40);
+  $('feed').innerHTML = ult.length ? ult.map(itemHTML).join('') : '<div class="empty">Todavía nadie dijo ninguna pajereada. Sospechoso.</div>';
+}
+
+function itemHTML(x){
+  const i = info(x);
+  const propio = yo && yo === x.nombre;
+  const badge = {
+    anulada: '<span class="badge void">anulada</span>',
+    juicio: '<span class="badge trial">⚖️ en juicio</span>',
+    culpable: '<span class="badge x2">culpable ×2</span>',
+    inocente: '<span class="badge free">inocente</span>',
+  }[i.estado] || '';
+  const dis = propio ? 'disabled title="No te podés votar a vos mismo"' : '';
+  let acts = '';
+  if (!x.apelada) {
+    acts = `<div class="acts">
+      <button class="vb up ${i.miVoto > 0 ? 'on' : ''}" data-vote="${x.id}" data-v="1" ${dis}>👍 ${i.up}</button>
+      <button class="vb down ${i.miVoto < 0 ? 'on' : ''}" data-vote="${x.id}" data-v="-1" ${dis}>👎 ${i.down}</button>
+      ${propio && i.estado === 'valida' ? `<button class="vb appeal" data-apelar="${x.id}">⚖️ Apelo</button>` : ''}
+    </div>`;
+  } else {
+    const fin = i.estado !== 'juicio';
+    acts = `<div class="trialbox">
+      ⚖️ <b>${fin ? 'Juicio terminado' : 'Juicio en curso'}</b> — ${esc(x.nombre)} apeló.
+      ${fin ? '' : `Faltan ${Math.max(0, MIN_VOTOS - i.culp - i.inoc)} voto(s) del jurado.`}
+      <div class="acts">
+        <button class="vb law ${i.miJuicio > 0 ? 'on' : ''}" data-juicio="${x.id}" data-v="1" ${dis}>🔨 Culpable ${i.culp}</button>
+        <button class="vb law ${i.miJuicio < 0 ? 'on' : ''}" data-juicio="${x.id}" data-v="-1" ${dis}>😇 Inocente ${i.inoc}</button>
+      </div>
+    </div>`;
+  }
+  const cls = i.estado === 'anulada' || i.estado === 'inocente' ? 'void' : i.estado === 'juicio' ? 'trial' : '';
+  return `
+    <div class="item ${cls}">
       <div style="font-size:22px">${EMOJI[x.nombre] || '🤚'}</div>
-      <div>
-        <b>${esc(x.nombre)}</b>
+      <div class="body">
+        <b>${esc(x.nombre)}</b>${x.categoria ? `<span class="tag">${CAT_E[x.categoria] || ''} ${esc(x.categoria)}</span>` : ''}${badge}
         ${x.frase ? `<div class="q">“${esc(x.frase)}”</div>` : ''}
         <div class="t">${fmt(x.fecha)}${x.por ? ' · anotada por ' + esc(x.por) : ''}</div>
+        ${acts}
       </div>
       <button class="del" data-del="${x.id}" title="Borrar">✕</button>
-    </div>`).join('') : '<div class="empty">Todavía nadie dijo ninguna pajereada. Sospechoso.</div>';
+    </div>`;
 }
 
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -205,37 +345,66 @@ function fmt(iso){
   return d.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }) + ' ' + d.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
 }
 
+function apply(s){ data = s.data || []; votos = s.votos || []; }
+
 async function load(){
   if (busy) return;
   try {
-    data = await api({ action: 'list' });
+    apply(await api({ action: 'list' }));
     setStatus(true, SCRIPT_URL ? 'en vivo · Google Sheets' : 'modo demo (local)');
     render();
-  } catch (e) {
-    setStatus(false, 'sin conexión');
-  }
+  } catch (e) { setStatus(false, 'sin conexión'); }
 }
 
 async function mutate(params, okMsg){
   busy = true;
-  try {
-    data = await api(params);
-    render();
-    toast(okMsg);
-  } catch (e) {
-    toast('Error: ' + e.message);
-  } finally { busy = false; }
+  try { apply(await api(params)); render(); if (okMsg) toast(okMsg); }
+  catch (e) { toast('Error: ' + e.message); busy = false; load(); }
+  finally { busy = false; }
+}
+
+function needYo(){
+  if (yo) return false;
+  toast('Primero elegí quién sos (arriba a la derecha)');
+  $('yo').focus();
+  return true;
+}
+
+function votar(id, tipo, v){
+  if (needYo()) return;
+  const prev = (votos.find(x => x.id === id && x.votante === yo && x.tipo === tipo) || {}).valor || 0;
+  const valor = prev === v ? 0 : v; // tocar de nuevo saca el voto
+  votos = votos.filter(x => !(x.id === id && x.votante === yo && x.tipo === tipo));
+  if (valor) votos.push({ id, votante: yo, valor, tipo });
+  render();
+  mutate({ action: 'vote', id, votante: yo, valor, tipo });
+}
+
+function renderCats(){
+  $('cats').innerHTML = CATS.map(c => `<button type="button" class="chip ${cat === c.k ? 'on' : ''}" data-cat="${c.k}">${c.e} ${c.k}</button>`).join('');
+  const c = CATS.find(c => c.k === cat);
+  $('phWrap').hidden = !c || !c.f.length;
+  $('phs').innerHTML = c ? c.f.map(f => `<button type="button" class="chip ph" data-ph="${esc(f)}">“${esc(f)}”</button>`).join('') : '';
 }
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('button'); if (!t) return;
+  const t = e.target.closest('button'); if (!t || t.disabled) return;
   if (t.dataset.r){ rango = t.dataset.r; store.set('pajapp.rango', rango); render(); }
   if (t.dataset.add){
-    target = t.dataset.add;
+    target = t.dataset.add; cat = '';
     $('dlgTitle').textContent = `Pajereada de ${target} ${EMOJI[target]}`;
     $('frase').value = '';
-    $('por').value = store.get('pajapp.por', '');
-    $('dlg').showModal(); $('frase').focus();
+    $('por').value = store.get('pajapp.por', '') || yo;
+    renderCats();
+    $('dlg').showModal();
+  }
+  if (t.dataset.cat){ cat = cat === t.dataset.cat ? '' : t.dataset.cat; renderCats(); }
+  if (t.dataset.ph){ $('frase').value = t.dataset.ph; $('frase').focus(); }
+  if (t.dataset.vote) votar(t.dataset.vote, 'voto', +t.dataset.v);
+  if (t.dataset.juicio) votar(t.dataset.juicio, 'juicio', +t.dataset.v);
+  if (t.dataset.apelar){
+    if (needYo()) return;
+    if (confirm('¿Apelás? Si el jurado te declara culpable, cuenta DOBLE.')) mutate({ action:'apelar', id: t.dataset.apelar, votante: yo }, '⚖️ Apelación presentada. Que decida el jurado.');
   }
   if (t.dataset.undo){
     const n = t.dataset.undo;
@@ -255,12 +424,12 @@ $('form').addEventListener('submit', e => {
   store.set('pajapp.por', por);
   $('dlg').close();
   const n = target;
-  mutate({ action:'add', nombre: n, frase: $('frase').value.trim(), por }, `+1 para ${n} 🤚`).then(() => {
+  mutate({ action:'add', nombre: n, frase: $('frase').value.trim(), por, categoria: cat }, `+1 para ${n} 🤚`).then(() => {
     const c = $('c-' + n); if (c){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
   });
 });
 
-if (!SCRIPT_URL) $('warn').innerHTML = '<div class="warn">Modo demo: los datos se guardan solo en este navegador hasta que se configure la URL del Google Sheet.</div>';
+if (!SCRIPT_URL) $('warn').innerHTML = '<div class="warn">Modo demo: los datos se guardan solo en este navegador.</div>';
 render();
 load();
 setInterval(load, 15000);
