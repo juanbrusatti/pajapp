@@ -1,6 +1,6 @@
 // Pajapp — backend en Google Apps Script (pegar en Extensiones > Apps Script del Sheet)
 const SHEET = 'Pajereadas';
-const NOMBRES = ['Juancho', 'Puntano', 'Ivan', 'Mati', 'Alan'];
+const NOMBRES = ['Juancho', 'Puntano', 'Ivan', 'Mati', 'Alan', 'Bachi', 'Head'];
 
 function getSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
