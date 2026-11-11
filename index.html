@@ -101,6 +101,14 @@ dialog textarea{resize:vertical;min-height:70px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;transition:transform .25s;z-index:9;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .warn{background:#fff3cd;color:#6b5200;border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:16px}
+.board{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px 14px;margin-bottom:20px}
+.board .lbl{font:700 12px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.pad{border:0;border-radius:14px;background:var(--soft);color:var(--ink);font:700 15px Inter;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform .08s,background .15s}
+.pad:hover{background:color-mix(in srgb,var(--accent) 15%,var(--soft))}
+.pad:active,.pad.hit{transform:scale(.94);background:var(--accent);color:#fff}
+.pad .k{font:600 11px Inter;opacity:.6;border:1px solid currentColor;border-radius:6px;padding:1px 5px}
+.auto{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+.auto input{accent-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -120,6 +128,12 @@ dialog textarea{resize:vertical;min-height:70px}
 
   <div id="warn"></div>
   <div id="hero"></div>
+
+  <div class="board">
+    <span class="lbl">🔊 Botonera</span>
+    <div id="pads" style="display:contents"></div>
+    <label class="auto"><input type="checkbox" id="autoSnd"> Sonar al cargar una +1</label>
+  </div>
 
   <div class="tabs" id="tabs">
     <button data-r="hoy">Hoy</button>
@@ -166,6 +180,50 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzrnK_2ID1uhDrbLEts
 const NOMBRES = ['Juancho', 'Puntano', 'Ivan', 'Mati', 'Alan', 'Bachi', 'Head'];
 const EMOJI = { Juancho:'🧉', Puntano:'🏜️', Ivan:'🐻', Mati:'⚡', Alan:'⚽', Bachi:'🐷', Head:'🍆' };
 const MIN_VOTOS = 3;
+
+// ---- 🔊 Botonera ----
+// Para sumar un sonido: agregá un objeto acá. `play` recibe (ctx, salida) y sintetiza,
+// o usá `src: 'sonidos/archivo.mp3'` para un audio subido al repo.
+let actx = null;
+function audio(){
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+const SONIDOS = [
+  { id:'chicling', e:'🔔', nombre:'Chicling', tecla:'1', play(ctx, out){
+      const t = ctx.currentTime;
+      // "chi": golpecito metálico de ruido filtrado
+      const len = Math.floor(ctx.sampleRate * 0.05);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const n = ctx.createBufferSource(); n.buffer = buf;
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6000;
+      const ng = ctx.createGain(); ng.gain.value = 0.5;
+      n.connect(hp).connect(ng).connect(out); n.start(t);
+      // "cling": dos campanitas brillantes, la segunda más aguda
+      [[0.06, 1760], [0.16, 2637]].forEach(([dt, f]) => {
+        [[1, 0.35], [2.76, 0.12], [5.4, 0.05]].forEach(([mult, vol]) => {
+          const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f * mult;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0, t + dt);
+          g.gain.linearRampToValueAtTime(vol, t + dt + 0.004);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + dt + (mult === 1 ? 1.1 : 0.4));
+          o.connect(g).connect(out); o.start(t + dt); o.stop(t + dt + 1.2);
+        });
+      });
+  } },
+];
+function tocar(id){
+  const s = SONIDOS.find(s => s.id === id); if (!s) return;
+  const btn = document.querySelector(`[data-snd="${id}"]`);
+  if (btn){ btn.classList.add('hit'); setTimeout(() => btn.classList.remove('hit'), 150); }
+  if (s.src) { new Audio(s.src).play().catch(() => {}); return; }
+  const ctx = audio();
+  const out = ctx.createGain(); out.gain.value = 0.8; out.connect(ctx.destination);
+  s.play(ctx, out);
+}
 
 const CATS = [
   { k:'Agrandado',   e:'💪', f:['Yo eso lo levanto con una mano','En mi época corría 10 km sin entrenar','Si me pongo, lo hago mejor que él'] },
@@ -389,6 +447,7 @@ function renderCats(){
 
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t || t.disabled) return;
+  if (t.dataset.snd) tocar(t.dataset.snd);
   if (t.dataset.r){ rango = t.dataset.r; store.set('pajapp.rango', rango); render(); }
   if (t.dataset.add){
     target = t.dataset.add; cat = '';
@@ -424,9 +483,19 @@ $('form').addEventListener('submit', e => {
   store.set('pajapp.por', por);
   $('dlg').close();
   const n = target;
+  if ($('autoSnd').checked) tocar('chicling');
   mutate({ action:'add', nombre: n, frase: $('frase').value.trim(), por, categoria: cat }, `+1 para ${n} 🤚`).then(() => {
     const c = $('c-' + n); if (c){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
   });
+});
+
+$('pads').innerHTML = SONIDOS.map(s => `<button class="pad" data-snd="${s.id}">${s.e} ${s.nombre}${s.tecla ? ` <span class="k">${s.tecla}</span>` : ''}</button>`).join('');
+$('autoSnd').checked = store.get('pajapp.autoSnd', true);
+$('autoSnd').onchange = e => store.set('pajapp.autoSnd', e.target.checked);
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || $('dlg').open) return;
+  const s = SONIDOS.find(s => s.tecla === e.key);
+  if (s) tocar(s.id);
 });
 
 if (!SCRIPT_URL) $('warn').innerHTML = '<div class="warn">Modo demo: los datos se guardan solo en este navegador.</div>';
