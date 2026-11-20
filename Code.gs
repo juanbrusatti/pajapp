@@ -3,7 +3,7 @@ const SHEET = 'Pajereadas';
 const VOTOS = 'Votos';
 const USUARIOS = 'Usuarios';
 const NOMBRES = ['Juancho', 'Puntano', 'Ivan', 'Mati', 'Alan', 'Bachi', 'Head'];
-const HEAD_P = ['id', 'fecha', 'nombre', 'frase', 'cargadoPor', 'categoria', 'apelada'];
+const HEAD_P = ['id', 'fecha', 'nombre', 'frase', 'cargadoPor', 'categoria', 'apelada', 'motivo'];
 const HEAD_V = ['pajereadaId', 'votante', 'valor', 'tipo', 'fecha'];
 const HEAD_U = ['nombre', 'pinHash', 'fecha'];
 const COOLDOWN_MS = 10000; // 10 s entre pajereadas (para todos)
@@ -81,7 +81,7 @@ function state_() {
     .map(function (r) {
       return {
         id: String(r[0]), fecha: new Date(r[1]).toISOString(), nombre: r[2], frase: r[3], por: r[4],
-        categoria: r[5] || '', apelada: r[6] ? new Date(r[6]).toISOString() : ''
+        categoria: r[5] || '', apelada: r[6] ? new Date(r[6]).toISOString() : '', motivo: String(r[7] || '')
       };
     });
   const votos = rows_(votSheet_(), HEAD_V.length)
@@ -151,7 +151,7 @@ function handle_(p) {
         }
       }
       sh.appendRow([Utilities.getUuid().slice(0, 8), new Date(), p.nombre,
-        String(p.frase || '').slice(0, 300), String(p.por || '').slice(0, 40), String(p.categoria || '').slice(0, 40), '']);
+        String(p.frase || '').slice(0, 300), String(p.por || '').slice(0, 40), String(p.categoria || '').slice(0, 40), '', '']);
       return '';
     });
   }
@@ -202,7 +202,9 @@ function handle_(p) {
       const r = sh.getRange(row, 1, 1, HEAD_P.length).getValues()[0];
       if (r[2] !== p.votante) return 'Solo el acusado puede apelar';
       if (r[6]) return 'Ya fue apelada';
-      sh.getRange(row, 7).setValue(new Date());
+      const motivo = String(p.motivo || '').trim().slice(0, 500);
+      if (motivo.length < 5) return 'Explica por que apelas (minimo 5 letras)';
+      sh.getRange(row, 7, 1, 2).setValues([[new Date(), motivo]]);
       return '';
     });
   }
