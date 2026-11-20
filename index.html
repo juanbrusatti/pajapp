@@ -234,12 +234,20 @@ const SONIDOS = [
         });
       });
   } },
+  { id:'audio2', e:'🎙️', nombre:'Audio', tecla:'2', src:'sonidos/audio-2.mp3' },
 ];
+const audios = {};
 function tocar(id){
   const s = SONIDOS.find(s => s.id === id); if (!s) return;
   const btn = document.querySelector(`[data-snd="${id}"]`);
   if (btn){ btn.classList.add('hit'); setTimeout(() => btn.classList.remove('hit'), 150); }
-  if (s.src) { new Audio(s.src).play().catch(() => {}); return; }
+  if (s.src) {
+    // un solo reproductor por sonido: si lo tocás de nuevo, arranca desde el principio
+    const a = audios[id] || (audios[id] = new Audio(s.src));
+    a.currentTime = 0;
+    a.play().catch(() => toast('No se pudo reproducir el audio'));
+    return;
+  }
   const ctx = audio();
   const out = ctx.createGain(); out.gain.value = 0.8; out.connect(ctx.destination);
   s.play(ctx, out);
